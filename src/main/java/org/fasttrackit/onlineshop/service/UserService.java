@@ -6,6 +6,7 @@ import org.fasttrackit.onlineshop.persistance.UserRepository;
 import org.fasttrackit.onlineshop.transfer.SaveUserRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService {
     //Inversion of Control (IoC)
     private final UserRepository userRepository;
 
-        // Dependency Injection
+    // Dependency Injection
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -37,7 +38,7 @@ public class UserService {
 
     public User getUser(long id) {
         LOGGER.info("Retrieving user {}", id);
-            //optional example
+        //optional example
 //        Optional<User> userOptional = userRepository.findById(id);
 //
 //        if (userOptional.isPresent()) {
@@ -50,5 +51,25 @@ public class UserService {
         return userRepository.findById(id)
                 //lambda expression
                 .orElseThrow(() -> new ResourceNotFoundException("User " + id + " does not exist"));
+    }
+
+    public User updateUser(long id, SaveUserRequest request) {
+        LOGGER.info("Updating user {}: {}", id, request);
+
+        User existingUser = getUser(id);
+
+//        existingUser.setFirstName(request.getFirstName());
+//        existingUser.setLastName(request.getLastName());
+
+        //same as above
+        BeanUtils.copyProperties(request, existingUser);
+
+        return userRepository.save(existingUser);
+    }
+
+    public void deleteUser(long id) {
+        LOGGER.info("Deleting user {}", id);
+
+        userRepository.deleteById(id);
     }
 }
