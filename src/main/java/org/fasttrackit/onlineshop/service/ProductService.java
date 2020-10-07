@@ -4,6 +4,7 @@ package org.fasttrackit.onlineshop.service;
 import org.fasttrackit.onlineshop.domain.Product;
 import org.fasttrackit.onlineshop.exception.ResourceNotFoundException;
 import org.fasttrackit.onlineshop.persistance.ProductRepository;
+import org.fasttrackit.onlineshop.transfer.product.ProductResponse;
 import org.fasttrackit.onlineshop.transfer.product.SaveProductRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(SaveProductRequest request) {
+    public ProductResponse createProduct(SaveProductRequest request) {
         LOGGER.info("Creating product {}", request);
 
         Product product = new Product();
@@ -32,8 +33,12 @@ public class ProductService {
         product.setImageUrl(request.getImageUrl());
         product.setQuantity(request.getQuantity());
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+
+        return mapProductResponse(savedProduct);
     }
+
+
 
     public Product getProduct (long id) {
         LOGGER.info("Retrieving product {}", id);
@@ -41,5 +46,17 @@ public class ProductService {
         return productRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Product " + id + " does not exist"));
 
+    }
+
+    private ProductResponse mapProductResponse(Product product) {
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(product.getId());
+        productResponse.setName(product.getName());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setImageUrl(product.getImageUrl());
+        productResponse.setQuantity(product.getQuantity());
+
+        return productResponse;
     }
 }
