@@ -17,7 +17,6 @@ public class UserTestSteps {
     @Autowired
     private UserService userService;
 
-    private UserTestSteps userTestSteps = new UserTestSteps();
 
     public User createUser() {
 
