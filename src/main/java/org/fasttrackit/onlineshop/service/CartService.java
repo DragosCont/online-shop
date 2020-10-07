@@ -2,17 +2,21 @@ package org.fasttrackit.onlineshop.service;
 
 
 import org.fasttrackit.onlineshop.domain.Cart;
+import org.fasttrackit.onlineshop.domain.Product;
 import org.fasttrackit.onlineshop.domain.User;
 import org.fasttrackit.onlineshop.exception.ResourceNotFoundException;
 import org.fasttrackit.onlineshop.persistance.CartRepository;
 import org.fasttrackit.onlineshop.transfer.cart.AddProductToCartRequest;
 import org.fasttrackit.onlineshop.transfer.cart.CartResponse;
+import org.fasttrackit.onlineshop.transfer.cart.ProductInCart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class CartService {
@@ -21,11 +25,13 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final UserService userService;
+    private final ProductService productService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, UserService userService) {
+    public CartService(CartRepository cartRepository, UserService userService, ProductService productService) {
         this.cartRepository = cartRepository;
         this.userService = userService;
+        this.productService = productService;
     }
 
     @Transactional
@@ -41,9 +47,11 @@ public class CartService {
             cart.setUser(user);
         }
 
-        // add product to cart
+        Product product = productService.getProduct(request.getProductId());
 
-         cartRepository.save(cart);
+        cart.addProduct(product);
+
+        cartRepository.save(cart);
     }
 
     @Transactional
@@ -62,6 +70,20 @@ public class CartService {
 
         CartResponse cartResponse = new CartResponse();
         cartResponse.setId(cart.getId());
+
+        Set<ProductInCart> products = new HashSet<>();
+        for (Product product : cart.getProducts()) {
+            ProductInCart productInCart = new ProductInCart();
+            productInCart.setId(product.getId());
+            productInCart.setName(product.getName());
+            productInCart.setPrice(product.getPrice());
+            productInCart.setImageUrl(product.getImageUrl());
+
+            products.add(productInCart);
+        }
+
+
+        cartResponse.setProducts(products);
 
 
         return cartResponse;
