@@ -1,7 +1,6 @@
 package org.fasttrackit.onlineshop.web;
 
 
-import org.fasttrackit.onlineshop.domain.Cart;
 import org.fasttrackit.onlineshop.service.CartService;
 import org.fasttrackit.onlineshop.transfer.cart.AddProductToCartRequest;
 import org.fasttrackit.onlineshop.transfer.cart.CartResponse;
@@ -31,7 +30,7 @@ public class CartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<CartResponse> getCart (@PathVariable long userId) {
+    public ResponseEntity<CartResponse> getCart(@PathVariable long userId) {
         CartResponse cart = cartService.getCart(userId);
         return ResponseEntity.ok(cart);
     }
