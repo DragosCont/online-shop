@@ -1,4 +1,4 @@
-package org.fasttrackit.onlineshop.steps;
+package org.fasttrackit.onlineshop.integrationtests.steps;
 
 import org.fasttrackit.onlineshop.domain.User;
 import org.fasttrackit.onlineshop.service.UserService;

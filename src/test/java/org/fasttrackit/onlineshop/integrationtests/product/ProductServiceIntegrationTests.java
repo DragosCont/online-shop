@@ -1,8 +1,8 @@
-package org.fasttrackit.onlineshop.product;
+package org.fasttrackit.onlineshop.integrationtests.product;
 
 
+import org.fasttrackit.onlineshop.integrationtests.steps.ProductTestSteps;
 import org.fasttrackit.onlineshop.service.ProductService;
-import org.fasttrackit.onlineshop.steps.ProductTestSteps;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
